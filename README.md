@@ -1,2 +1,2 @@
-# investigacion_operativa
-Trabajos Prácticos para la cátedra de Investigación Operativa
+# simulacion
+Trabajos Prácticos para la cátedra de Simulación
