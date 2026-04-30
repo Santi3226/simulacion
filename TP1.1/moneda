@@ -1,0 +1,11 @@
+import random, sys, matplotlib.pyplot as plt 
+arr=[]
+if len(sys.argv) < 1:
+    exit(0)
+
+for i in range(int(sys.argv[1])):
+  valor = random.randint(0,1)
+  arr.append(valor)
+plt.hist(arr,2, range=[0,1])
+plt.ylabel('Tiradas')
+plt.show()

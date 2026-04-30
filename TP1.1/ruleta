@@ -1,0 +1,17 @@
+import random, sys, matplotlib.pyplot as plt 
+eleccion = int(input())
+cont=0
+arr=[]
+if len(sys.argv) < 1:
+    exit(0)
+
+for i in range(int(sys.argv[1])):
+  valor = random.randint(0,36)
+  arr.append(valor)
+  if(eleccion==valor):
+    cont=cont+1
+print("El valor ", eleccion," salio ", cont," veces")
+plt.hist(arr,2, range=[0,1])
+plt.plot(1, 0.5)
+plt.ylabel('Tiradas')
+plt.show()
