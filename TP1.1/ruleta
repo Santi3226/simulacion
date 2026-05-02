@@ -11,7 +11,9 @@ for i in range(int(sys.argv[1])):
   if(eleccion==valor):
     cont=cont+1
 print("El valor ", eleccion," salio ", cont," veces")
-plt.hist(arr,2, range=[0,1])
-plt.plot(1, 0.5)
-plt.ylabel('Tiradas')
+plt.hist(arr, 37, range=[0,37]) #Tuve q agregar un espacio (?)
+plt.ylabel('Cantidad de Apariciones')
+plt.xlabel('Numeros')
+plt.title("Histograma Ruleta con "+sys.argv[1]+" reps.")
+plt.xlim([0,36])
 plt.show()

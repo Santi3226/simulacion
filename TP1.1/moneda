@@ -4,8 +4,11 @@ if len(sys.argv) < 1:
     exit(0)
 
 for i in range(int(sys.argv[1])):
-  valor = random.randint(0,1)
+  valor = random.randint(1,2)
   arr.append(valor)
-plt.hist(arr,2, range=[0,1])
-plt.ylabel('Tiradas')
+plt.hist(arr,2, range=[1,2])
+plt.ylabel('Cantidad de Apariciones')
+plt.xlabel('Valores')
+plt.title("Histograma Moneda con "+sys.argv[1]+" reps.")
+plt.xlim([0,3]) #Debe haber una mejor manera de representarlo
 plt.show()
