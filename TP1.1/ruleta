@@ -1,3 +1,4 @@
+"""
 import random, sys, matplotlib.pyplot as plt 
 eleccion = int(input())
 cont=0
@@ -17,3 +18,113 @@ plt.xlabel('Numeros')
 plt.title("Histograma Ruleta con "+sys.argv[1]+" reps.")
 plt.xlim([0,36])
 plt.show()
+"""
+
+import random
+import argparse
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Valores teóricos para una ruleta europea
+VALOR_ESPERADO = sum(range(37)) / 37            # 18.0
+VARIANZA_ESPERADA = sum((x - VALOR_ESPERADO)**2 for x in range(37)) / 37  # ≈114.0
+DESV_EST_TEORICO = np.sqrt(VARIANZA_ESPERADA)   # ≈10.68
+FRECUENCIA_ESPERADA = 1 / 37                    # ≈0.027
+
+def simular_ruleta_avanzado(n_tiradas, numero_elegido):
+    resultados = []
+    fr_acum = []
+    prom_acum = []
+    var_acum = []
+    std_acum = []
+    aciertos = 0
+
+    for i in range(1, n_tiradas + 1):
+        numero = random.randint(0, 36)
+        resultados.append(numero)
+        if numero == numero_elegido:
+            aciertos += 1
+
+        fr_acum.append(aciertos / i)
+        prom_acum.append(np.mean(resultados))
+        var_acum.append(np.var(resultados))
+        std_acum.append(np.std(resultados))
+
+    return fr_acum, prom_acum, var_acum, std_acum
+
+def graficar_multiple(x, todas_y, y_teorica, titulo, ylabel, nombre_archivo):
+    plt.figure(figsize=(8, 5))
+    for idx, y in enumerate(todas_y, start=1):
+        plt.plot(x, y, label=f'Corrida {idx}')
+    plt.axhline(y=y_teorica, color='black', linestyle='--', label='Teórico')
+    plt.xlabel('n (número de tiradas)')
+    plt.ylabel(ylabel)
+    plt.title(titulo)
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(nombre_archivo)
+    plt.close()
+
+def main():
+    parser = argparse.ArgumentParser(description='Simulación de una ruleta.')
+    parser.add_argument('-c', type=int, default=10, help='Cantidad de corridas')
+    parser.add_argument('-n', type=int, default=300, help='Cantidad de tiradas por corrida')
+    parser.add_argument('-e', type=int, default=17, help='Número elegido')
+    args = parser.parse_args()
+
+    # Para almacenar los resultados de cada corrida
+    todas_fr = []
+    todos_prom = []
+    todas_var = []
+    todos_std = []
+    x = list(range(1, args.n + 1))
+
+    # Ejecutar corridas y recopilar datos
+    for corrida in range(1, args.c + 1):
+        fr, prom, var, std = simular_ruleta_avanzado(args.n, args.e)
+        todas_fr.append(fr)
+        todos_prom.append(prom)
+        todas_var.append(var)
+        todos_std.append(std)
+
+    # Graficar todo junto
+    graficar_multiple(
+        x, todas_fr, FRECUENCIA_ESPERADA,
+        'Frecuencia relativa acumulada del número ' + str(args.e),
+        'fr (frecuencia relativa)',
+        'Frecuencia relativa.png'
+    )
+    graficar_multiple(
+        x, todos_prom, VALOR_ESPERADO,
+        'Promedio acumulado de las tiradas',
+        'vp (valor promedio)',
+        'Promedio.png'
+    )
+    graficar_multiple(
+        x, todos_std, DESV_EST_TEORICO,
+        'Desvío estándar acumulado de las tiradas',
+        'vd (desvío estándar)',
+        'Desvio.png'
+    )
+    graficar_multiple(
+        x, todas_var, VARIANZA_ESPERADA,
+        'Varianza acumulada de las tiradas',
+        'vv (varianza)',
+        'Varianza.png'
+    )
+
+    fr_final = [fr_run[-1] for fr_run in todas_fr]
+    prom_final = [p_run[-1] for p_run in todos_prom]
+    var_final = [v_run[-1] for v_run in todas_var]
+    std_final = [s_run[-1] for s_run in todos_std]
+
+    print("Gráficos comparativos generados y guardados.")
+    print("=== Promedio entre todas las corridas ===")
+    print(f"Frecuencia relativa media: {np.mean(fr_final):.4f}")
+    print(f"Promedio medio: {np.mean(prom_final):.4f}")
+    print(f"Varianza media: {np.mean(var_final):.4f}")
+    print(f"Desvío estándar medio: {np.mean(std_final):.4f}")
+
+if __name__ == "__main__":
+    main()
