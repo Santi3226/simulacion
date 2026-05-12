@@ -1,0 +1,63 @@
+# Archivos auxiliares comunes
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.xdv
+
+# Bibliografía
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+
+# Índices y glosarios
+*.idx
+*.ilg
+*.ind
+*.ist
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+
+# Beamer
+*.nav
+*.snm
+
+# TikZ / PGF
+*.dpth
+*.md5
+
+# latexmk
+*.fdb_latexmk
+*.fls
+
+# Minted
+_minted*
+*.pyg
+
+# Nomenclatura
+*.nlo
+*.nls
+
+# Comentarios y notas
+*.tdo
+
+# Archivos de cache
+*.cache
+*.dep
+*.listing
+
+# Archivos temporales varios
+*.tmp
+*.bak
+*.sav
