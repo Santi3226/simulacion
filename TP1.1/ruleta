@@ -1,5 +1,11 @@
+import random
+import argparse
+import matplotlib.pyplot as plt
+import numpy as np
+
 """
-import random, sys, matplotlib.pyplot as plt 
+IMPLEMENTACION BASICA
+ 
 eleccion = int(input())
 cont=0
 arr=[]
@@ -20,18 +26,13 @@ plt.xlim([0,36])
 plt.show()
 """
 
-import random
-import argparse
-import matplotlib.pyplot as plt
-import numpy as np
-
 # Valores teóricos para una ruleta europea
-VALOR_ESPERADO = sum(range(37)) / 37            # 18.0
-VARIANZA_ESPERADA = sum((x - VALOR_ESPERADO)**2 for x in range(37)) / 37  # ≈114.0
-DESV_EST_TEORICO = np.sqrt(VARIANZA_ESPERADA)   # ≈10.68
-FRECUENCIA_ESPERADA = 1 / 37                    # ≈0.027
+media_teorica = sum(range(37)) / 37            # 18.0
+varianza_teorica = sum((x - media_teorica)**2 for x in range(37)) / 37  # 114.0
+desvio_teorico = np.sqrt(varianza_teorica)   # 10.68 
+frecuencia_teorica = 1 / 37                    # 0.027 - Probabilidad de acierto
 
-def simular_ruleta_avanzado(n_tiradas, numero_elegido):
+def simular_ruleta_avanzado(cant_tiradas, numero_elegido):
     resultados = []
     fr_acum = []
     prom_acum = []
@@ -39,8 +40,8 @@ def simular_ruleta_avanzado(n_tiradas, numero_elegido):
     std_acum = []
     aciertos = 0
 
-    for i in range(1, n_tiradas + 1):
-        numero = random.randint(0, 36)
+    for i in range(1, cant_tiradas + 1):
+        numero = np.random.randint(0, 37)
         resultados.append(numero)
         if numero == numero_elegido:
             aciertos += 1
@@ -62,7 +63,6 @@ def graficar_multiple(x, todas_y, y_teorica, titulo, ylabel, nombre_archivo):
     plt.title(titulo)
     plt.legend()
     plt.grid(True)
-    plt.tight_layout()
     plt.savefig(nombre_archivo)
     plt.close()
 
@@ -90,25 +90,25 @@ def main():
 
     # Graficar todo junto
     graficar_multiple(
-        x, todas_fr, FRECUENCIA_ESPERADA,
+        x, todas_fr, frecuencia_teorica,
         'Frecuencia relativa acumulada del número ' + str(args.e),
         'fr (frecuencia relativa)',
         'Frecuencia relativa.png'
     )
     graficar_multiple(
-        x, todos_prom, VALOR_ESPERADO,
+        x, todos_prom, media_teorica,
         'Promedio acumulado de las tiradas',
         'vp (valor promedio)',
         'Promedio.png'
     )
     graficar_multiple(
-        x, todos_std, DESV_EST_TEORICO,
+        x, todos_std, desvio_teorico,
         'Desvío estándar acumulado de las tiradas',
         'vd (desvío estándar)',
         'Desvio.png'
     )
     graficar_multiple(
-        x, todas_var, VARIANZA_ESPERADA,
+        x, todas_var, varianza_teorica,
         'Varianza acumulada de las tiradas',
         'vv (varianza)',
         'Varianza.png'
@@ -120,9 +120,12 @@ def main():
     std_final = [s_run[-1] for s_run in todos_std]
 
     print("Gráficos comparativos generados y guardados.")
+    print("Cantidad de corridas: "+str(args.c))
+    print("Cantidad de tiradas: "+str(args.n))
+    print("Numero elegido: "+ str(args.e))
     print("=== Promedio entre todas las corridas ===")
-    print(f"Frecuencia relativa media: {np.mean(fr_final):.4f}")
-    print(f"Promedio medio: {np.mean(prom_final):.4f}")
+    print(f"Frecuencia relativa media: {np.mean(fr_final):.4f}") #f trunca decimales
+    print(f"Promedio medio: {np.mean(prom_final):.4f}") #.4f = 4 decimales
     print(f"Varianza media: {np.mean(var_final):.4f}")
     print(f"Desvío estándar medio: {np.mean(std_final):.4f}")
 

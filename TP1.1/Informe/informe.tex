@@ -1,0 +1,204 @@
+\documentclass{article}
+\usepackage{arxiv}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{float}
+
+\title{\textbf{Simulación de una Ruleta} \\ \large Trabajo Práctico 1.1}
+\author{
+ Dedich Santiago \\
+  Universidad Tecnológica Nacional FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{santidedich3226@gmail.com} \\
+      \And
+ Salami Tomás \\
+  Universidad Tecnológica Nacional FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{tomas.salami1@gmail.com} \\
+  \And
+Mesapelle Giani\\
+  Universidad Tecnológica Nacional FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{gianimesapelle04@gmail.com}\\
+  \And
+Lovatti Francisco\\
+  Universidad Tecnológica Nacional FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{franciscolovatti08@gmail.com}\\
+  %% \AND
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+\date{Mayo 2026}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+El presente trabajo tiene como objetivo desarrollar una simulación computacional del funcionamiento de una ruleta de casino europea utilizando Python. Se evalúa estadísticamente el comportamiento del juego mediante el análisis de frecuencias absolutas y relativas, y se representan gráficamente los resultados obtenidos.\\
+\textbf{Palabras clave:} simulación, ruleta, Python, análisis estadístico, probabilidad.
+\end{abstract}
+
+\section{Introducción}
+La ruleta es uno de los juegos de azar más populares en los casinos de todo el mundo. Su funcionamiento se basa en un disco giratorio con 37 casillas numeradas del 0 al 36, donde una bola lanzada puede detenerse al azar en cualquiera de ellas. Con este trabajo, utilizaremos Python para simular múltiples tiradas de la ruleta y observar cómo evolucionan diversas métricas estadísticas, como la frecuencia relativa de un número elegido, el promedio, la varianza y el desvío estándar a medida que incrementamos el número de tiradas.
+
+Llevaremos a cabo varias corridas independientes de la simulación para comparar los resultados obtenidos con los valores teóricos esperados. De este modo, comprobaremos de forma práctica la ley de los grandes números y demostraremos cómo las simulaciones por computadora pueden ayudar a entender mejor el comportamiento de procesos aleatorios.
+
+\section{Conceptos teóricos empleados}
+\begin{itemize}
+  \item \textbf{Población:} conjunto total de elementos a estudiar. En este trabajo se considera como población teórica el conjunto de todas las tiradas posibles.
+  \item \textbf{Muestra:} subconjunto de la población. En este caso, cada conjunto de tiradas simuladas representa una muestra.
+  \item \textbf{Frecuencia relativa:} \(f = \frac{n_i}{N}\), donde \(n_i\) es la cantidad de apariciones del evento, y \(N\) el total de observaciones.
+  \item \textbf{Promedio (media):} \(\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i\)
+  \item \textbf{Varianza:} \(\sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})^2\)
+  \item \textbf{Desviación estándar:} \(s = \sqrt{\frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2}\)
+\end{itemize}
+
+\section{Desarrollo}
+El programa está implementado en Python. Para simular la ruleta utilizamos las siguientes bibliotecas:
+\begin{itemize}
+  \item \texttt{random}: genera números aleatorios entre 0 y 36.
+  \item \texttt{numpy}: calcula métricas estadísticas como media, varianza y desviación estándar.
+  \item \texttt{argparse}: permite ingresar parámetros desde la consola.
+  \item \texttt{matplotlib.pyplot}: genera los gráficos solicitados.
+\end{itemize}
+
+\noindent La simulación funciona de la siguiente manera:
+\begin{enumerate}
+  \item Se leen tres parámetros: número de corridas (\texttt{-c}), número de tiradas por corrida (\texttt{-n}) y número elegido (\texttt{-e}). En caso de no ingresarse valores por consola se consideran c: 10, n: 300 y e: 17 como por defecto.
+  \item Para cada corrida:
+    \begin{itemize}
+      \item Se simulan las tiradas y se almacenan los resultados en una lista.
+      \item Se calcula la frecuencia relativa acumulada del número elegido, el promedio acumulado, la varianza acumulada y el desvío estándar acumulado tras cada tirada.
+      \item Se generan cuatro gráficos comparativos en un único archivo por métrica, mostrando una curva por cada corrida y la línea teórica esperada.
+    \end{itemize}
+    \item De todas las corridas se saca un promedio de los estadisticos  
+\end{enumerate}
+
+\section{Resultados obtenidos}
+Para analizar el comportamiento estadístico de la ruleta, se realizaron simulaciones variando el número de \textbf{corridas} (\texttt{-c}) en 1, 5 y 10. En cada caso se evaluaron las siguientes métricas estadísticas acumuladas a lo largo del número de tiradas (\texttt{-n}) 300:
+
+
+\begin{itemize}
+  \item \textbf{Frecuencia relativa acumulada del número elegido}
+  \item \textbf{Promedio acumulado de los números obtenidos}
+  \item \textbf{Varianza acumulada}
+  \item \textbf{Desvío estándar acumulado}
+\end{itemize}
+
+A continuación, se presentan los gráficos generados para cada métrica agrupados según la cantidad de corridas. 
+
+\subsection*{Resultados con 1 corrida}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.5\textwidth]{../Graficas/Frecuencia relativa 1c.png} &
+    \includegraphics[width=0.5\textwidth]{../Graficas/Promedio 1c.png} \\
+    \includegraphics[width=0.5\textwidth]{../Graficas/Desvio 1c.png} &
+    \includegraphics[width=0.5\textwidth]{../Graficas/Varianza 1c.png} \\
+  \end{tabular}
+  \caption{Métricas estadísticas obtenidas con 1 corrida.}
+\end{figure}
+
+\begin{center}
+    \item {Promedio de la corrida} 
+        \begin{itemize}
+          \item {Frecuencia relativa media: 0.0367}
+          \item {Promedio medio: 18.1200}
+          \item {Varianza media: 101.4523}
+          \item {Desvío estándar medio: 10.0724}
+        \end{itemize}
+\end{center}
+
+
+\subsection*{Resultados con 5 corridas}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.5\textwidth]{../Graficas/Frecuencia relativa 5C.png} &
+    \includegraphics[width=0.5\textwidth]{../Graficas/Promedio 5C.png} \\
+     \\
+    \includegraphics[width=0.5\textwidth]{../Graficas/Desvio 5C.png} &
+    \includegraphics[width=0.5\textwidth]{../Graficas/Varianza 5C.png} \\
+    
+  \end{tabular}
+  \caption{Métricas estadísticas obtenidas con 5 corridas.}
+\end{figure}
+
+\begin{center}
+    \item {Promedio entre todas las corridas}
+        \begin{itemize}
+          \item {Frecuencia relativa media: 0.0240}
+          \item {Promedio medio: 18.1587}
+          \item {Varianza media: 114.8086}
+          \item {Desvío estándar medio: 10.7126}
+        \end{itemize}
+\end{center}
+
+
+\subsection*{Resultados con 10 corridas}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{../Graficas/Frecuencia relativa 10C.png} &
+    \includegraphics[width=0.45\textwidth]{../Graficas/Promedio 10C.png} \\
+    \textbf{Frecuencia relativa} & \textbf{Promedio acumulado} \\
+    \includegraphics[width=0.45\textwidth]{../Graficas/Desvio 10C.png} &
+    \includegraphics[width=0.45\textwidth]{../Graficas/Varianza 10C.png} \\
+    \textbf{Desvío estándar} & \textbf{Varianza acumulada}
+  \end{tabular}
+  \caption{Métricas estadísticas obtenidas con 10 corridas.}
+\end{figure}
+
+\begin{center}
+    \item {Promedio entre todas las corridas}
+        \begin{itemize}
+          \item {Frecuencia relativa media: 0.0267}
+          \item {Promedio medio: 17.7643}
+          \item {Varianza media: 113.5056}
+          \item {Desvío estándar medio: 10.6484}
+        \end{itemize}
+\end{center}
+
+
+\section{Conclusión}
+
+A lo largo del trabajo se pudo observar que, a medida que aumentamos la cantidad de tiradas, los valores de las métricas estadísticas —como la frecuencia relativa, el promedio, la varianza y la desviación estándar— se vuelven cada vez más estables y se acercan a los valores que uno esperaría teóricamente en una ruleta justa. Esto confirma, de forma simple y visual, la conocida \textbf{ley de los grandes números}, la repetición en cantidad de un experimento, logra que el promedio experimental converge al promedio teórico.
+
+Además, al ejecutar el programa con diferentes cantidades de corridas (1, 5 y 10), se nota que aunque el comportamiento general de las simulaciones es parecido, existen pequeñas variaciones entre cada corrida. Esto refleja el carácter aleatorio del experimento, pero también muestra que a mayor cantidad de corridas, el resultado promedio se vuelve más confiable.
+
+Este tipo de simulaciones con Python resulta muy útil para estudiar cómo se comportan los procesos aleatorios y cómo evolucionan sus estadísticas a lo largo del tiempo. 
+
+\section{Referencias}
+\begin{itemize}
+  \item Wikipedia. \textit{Ruleta}. https://es.wikipedia.org/wiki/Ruleta
+  \item Cornell University LaTeX Template. https://es.overleaf.com/latex/templates/style-and-template-for-preprints-arxiv-bio-arxiv/pkzcrhzcdxmc
+  \item ReLópez-Briega. \textit{Probabilidad y estadística con Python}. https://relopezbriega.github.io/blog/2015/06/27/probabilidad-y-estadistica-con-python/
+  \item Python para impacientes. https://python-para-impacientes.blogspot.com/2014/08/graficos-en-ipython.html
+  \item Documentación oficial de Matplotlib. https://matplotlib.org/stable/users/index
+\end{itemize}
+
+\end{document}
