@@ -80,6 +80,18 @@ def graficar_histograma(todas_corridas, cant_tiradas, nombre_archivo):
     plt.savefig(nombre_archivo)
     plt.close(fig)
 
+def graficar_histograma_promedios(todos_prom, media_teorica, nombre_archivo, cant_corridas):
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for idx, prom in enumerate(todos_prom, start=1):
+        ax.hist(prom, bins=30, alpha=0.5)
+    ax.axvline(x=media_teorica, color='black', linestyle='--', label='Teórico')
+    ax.set_xlabel('Promedio acumulado')
+    ax.set_ylabel('Frecuencia')
+    ax.set_title(f'Histograma de Promedios Acumulados con {cant_corridas} corridas')
+    ax.legend()
+    plt.savefig(nombre_archivo)
+    plt.close(fig)
+
 def main():
     parser = argparse.ArgumentParser(description='Simulación de una ruleta.')
     parser.add_argument('-c', type=int, default=10, help='Cantidad de corridas')
@@ -132,6 +144,10 @@ def main():
 
     graficar_histograma(
         todos_res, args.n, 'Histograma.png'
+    )
+
+    graficar_histograma_promedios(
+        todos_prom, media_teorica, 'Histograma_Promedios.png', args.c
     )
 
     fr_final = [fr_run[-1] for fr_run in todas_fr]
