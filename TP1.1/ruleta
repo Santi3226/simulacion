@@ -1,4 +1,3 @@
-import random
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
@@ -51,7 +50,7 @@ def simular_ruleta_avanzado(cant_tiradas, numero_elegido):
         var_acum.append(np.var(resultados))
         std_acum.append(np.std(resultados))
 
-    return fr_acum, prom_acum, var_acum, std_acum
+    return fr_acum, prom_acum, var_acum, std_acum, resultados
 
 def graficar_multiple(x, todas_y, y_teorica, titulo, ylabel, nombre_archivo):
     plt.figure(figsize=(8, 5))
@@ -66,6 +65,21 @@ def graficar_multiple(x, todas_y, y_teorica, titulo, ylabel, nombre_archivo):
     plt.savefig(nombre_archivo)
     plt.close()
 
+def graficar_histograma(todas_corridas, cant_tiradas, nombre_archivo):
+    bins = np.arange(-0.5, 37.5, 1)  
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for idx, resultados in enumerate(todas_corridas, start=1):
+        ax.hist(resultados, bins=bins, alpha=0.5, rwidth=0.8, label=f'Corrida {idx}')
+    frecuencia_absoluta_teorica = cant_tiradas / 37 # número de veces que se espera que salga cada número
+    ax.axhline(y=frecuencia_absoluta_teorica, color='black', linestyle='--', label='Teórico')
+    ax.set_xlabel('Números')
+    ax.set_ylabel('Cantidad de Apariciones')
+    ax.set_title(f'Histograma Ruleta con {cant_tiradas} tiradas')
+    ax.set_xlim([-0.5, 36.5])
+    ax.legend()
+    plt.savefig(nombre_archivo)
+    plt.close(fig)
+
 def main():
     parser = argparse.ArgumentParser(description='Simulación de una ruleta.')
     parser.add_argument('-c', type=int, default=10, help='Cantidad de corridas')
@@ -78,15 +92,17 @@ def main():
     todos_prom = []
     todas_var = []
     todos_std = []
+    todos_res = []
     x = list(range(1, args.n + 1))
 
     # Ejecutar corridas y recopilar datos
     for corrida in range(1, args.c + 1):
-        fr, prom, var, std = simular_ruleta_avanzado(args.n, args.e)
+        fr, prom, var, std, res = simular_ruleta_avanzado(args.n, args.e)
         todas_fr.append(fr)
         todos_prom.append(prom)
         todas_var.append(var)
         todos_std.append(std)
+        todos_res.append(res)
 
     # Graficar todo junto
     graficar_multiple(
@@ -112,6 +128,10 @@ def main():
         'Varianza acumulada de las tiradas',
         'vv (varianza)',
         'Varianza.png'
+    )
+
+    graficar_histograma(
+        todos_res, args.n, 'Histograma.png'
     )
 
     fr_final = [fr_run[-1] for fr_run in todas_fr]
