@@ -1,0 +1,298 @@
+\documentclass{article}
+\usepackage{arxiv}
+\usepackage{float}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\title{\textbf{Estudio Económico - Matemático \\ de Apuestas 
+en la Ruleta} \\ \large Trabajo Práctico 1.2}
+
+\author{
+ Dedich Santiago \\
+  Universidad Tecnológica Nacional - FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{santidedich3226@gmail.com} \\
+   \And
+ Salami Tomás \\
+  Universidad Tecnológica Nacional - FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{tomas.salami1@gmail.com} \\
+  \And
+Mesapelle Giani\\
+  Universidad Tecnológica Nacional - FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{gianimesapelle04@gmail.com}\\
+  \And
+Lovatti Francisco\\
+  Universidad Tecnológica Nacional - FRRO\\
+  Zeballos 1341, S2000, Argentina\\
+  \texttt{franciscolovatti08@gmail.com}\\
+}
+\date{Mayo 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Este trabajo tiene por objetivo analizar distintas estrategias de apuestas aplicadas a una ruleta simulada, evaluando su rendimiento en términos de éxito y bancarrota. Se implementaron en Python estrategias clásicas como Martingala, D’Alembert y Fibonacci, además de una estrategia adicional (Paroli). Se simularon múltiples tiradas con capital finito e infinito, evaluando la evolución del capital y la frecuencia de aciertos.
+\end{abstract}
+
+\section{Introducción}
+El juego de la ruleta ha sido históricamente objeto de interés tanto en el ámbito lúdico como matemático. Desde la perspectiva de la ingeniería, se busca desmitificar probabilidades de éxito mediante simulaciones computacionales. Este trabajo propone analizar cómo se comportan distintas estrategias de apuestas en la ruleta, contrastando expectativas con resultados reales obtenidos mediante programación en Python.
+
+\section{Conceptos teóricos empleados}
+\begin{itemize}
+  \item \textbf{Población:} conjunto total de tiradas posibles en una ruleta europea (cada lanzamiento de la bola sobre las 37 casillas).
+  \item \textbf{Muestra:} secuencia de tiradas simuladas en una sola corrida.
+  \item \textbf{Frecuencia de victorias acumulada ($f_t$):}
+    \[
+      f_t = \frac{1}{t}\sum_{i=1}^{t} v_i,
+    \]
+    con $v_i=1$ si la apuesta $i$ ganó, y $v_i=0$ si perdió.
+  \item \textbf{Probabilidad teórica de éxito:} para apuestas a color, 
+    \[
+      p = \frac{18}{37} \approx 0.486.
+    \]
+  \item \textbf{Martingala:} La Martingala es probablemente la estrategia más conocida y agresiva. Su lógica es simple: tras cada pérdida duplica la apuesta para, en la siguiente victoria, recuperar todas las pérdidas acumuladas y ganar una unidad inicial.
+  
+  \item \textbf{D’Alembert:} La D’Alembert busca un compromiso menos arriesgado que la Martingala. Aumenta la apuesta en una unidad tras cada pérdida y la disminuye en una unidad tras cada victoria, manteniendo un ritmo lineal.
+  
+  \item \textbf{Fibonacci:} Basada en la famosa sucesión de Fibonacci, esta estrategia usa progresiones más suaves que la Martingala.
+  
+  \item \textbf{Paroli:} El Paroli es un sistema de progresión positiva: aprovecha las rachas ganadoras multiplicando la apuesta tras cada victoria, pero resetear tras una pérdida, de modo que nunca se arriesga más de lo ganado.
+
+\end{itemize}
+
+\section{Desarrollo}
+Se desarrolló un script en Python 3.13.3 que simula el giro de una ruleta europea (números del 0 al 36), gestiona distintos tipos de apuestas y utiliza las siguientes librerias:
+\begin{itemize}
+  \item \texttt{random}: usada para generar números aleatorios entre 0 y 36.
+  \item \texttt{argparse}: lee parámetros de línea de comandos.
+  \item \texttt{numpy}: realiza operaciones numéricas y cálculo de promedios.
+  \item \texttt{matplotlib.pyplot}: crea y guarda gráficos de flujo de caja y frecuencia de victorias.
+\end{itemize}
+
+La simulación consta de:
+\begin{enumerate}
+  \item \textbf{Lectura de parámetros:} número de corridas (\texttt{-c}), tiradas (\texttt{-n}), numero especifico de la ruleta (\texttt{-e}), estrategia (\texttt{-s}), tipo de capital (\texttt{-a}), apuesta inicial (\texttt{-p}), además el usuario puede seleccionar el tipo de apuesta (\texttt{número, color, docena})
+  
+   \item \textbf{Para cada corrida se muestra:} 
+    \begin{itemize}
+      \item \textbf {Capital finito:}
+    \begin{itemize}
+        \item La corrida finaliza cuando el capital llega a 0 (quiebra) o cuando se alcanza el máximo de tiradas configuradas. Las quiebras son registradas para el análisis estadístico posterior.
+    \end{itemize}
+    \item \textbf {Capital infinito:}
+    \begin{itemize}
+        \item La corrida termina solo cuando se alcanza el máximo de tiradas (-n), ya que no hay quiebra.
+    \end{itemize}
+\end{itemize}
+    \item \textbf{Resultados mostrados:} 
+        \begin{itemize}
+          \item {Saldo promedio final entre todas las corridas}
+          \item {Cantidad de quiebras ocurridas}
+          \item {Gráfico de frecuencia relativa de apuestas favorables}
+          \item {Gráfico de evolución de capital promedio en función de las tiradas, incluyendo marcas donde ocurrieron quiebras}
+
+\end{itemize}
+\end{itemize}
+
+\section{Resultados y Análisis}
+Para cada estrategia se realizaron múltiples ejecuciones, con 100 tiradas cada una, alternando la cantidad de corridas entre 2 y 20, usando capital infinito y finito de \$1000 y \$10000. Mostrando la frecuencia relativa de aciertos, la evolución del capital promedio y los momentos de bancarrota (si hubo).
+
+\subsection*{Martingala}
+Con capital finito se observa que, la estrategia Martingala tiende a generar beneficios constantes a corto plazo. Sin embargo, debido a la naturaleza exponencial del aumento de la apuesta tras cada pérdida, existe un alto riesgo de bancarrota si se produce una racha prolongada de pérdidas. Las gráficas muestran varios casos donde el capital cae abruptamente, lo cual representa las grandes pérdidas del jugador. 
+
+Con capital infinito es un escenario ideal, donde el jugador puede apostar indefinidamente sin restricciones, la Martingala garantiza un beneficio eventual en cada ciclo de apuestas. Las gráficas reflejan un crecimiento escalonado del capital, con períodos de pérdidas seguidos por ganancias que recuperan las pérdidas acumuladas más un margen. No obstante, este comportamiento es puramente teórico y no aplicable en la práctica debido a los límites reales de capital y de apuesta de los casinos. 
+
+Aunque la Martingala parece ser efectiva a corto plazo, su viabilidad depende fuertemente del capital disponible. En términos de expectativa matemática, la estrategia no altera la ventaja de la casa, y a largo plazo, el riesgo de quiebra es considerable. Las simulaciones demuestran que el crecimiento del capital no es sostenido en el tiempo cuando se limita el capital.
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen.png} &
+  \end{tabular}
+  \caption{Martingala Capital Infinito}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Martingala 100 tiradas 2 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Martingala 100 tiradas 20 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen3.png} &
+  \end{tabular}
+  \caption{Martingala 100 tiradas 20 corridas 10000 unidades monetarias}
+\end{figure}
+
+\subsection*{D'Alembert}
+En un escenario ideal con capital infinito, la estrategia de D’Alembert ofrece una progresión aritmética que limita el crecimiento exponencial de las apuestas, reduciendo así el riesgo asociado a rachas de pérdidas prolongadas. Dado que tras cada pérdida se incrementa la apuesta en una unidad, y tras cada victoria se reduce, la estrategia tiende a equilibrarse con el tiempo si la cantidad de apuestas es suficientemente grande.
+
+En este contexto teórico, el jugador no se enfrenta a la posibilidad de quiebra, y por ende, puede eventualmente recuperar sus pérdidas si se mantiene jugando. Sin embargo, las ganancias esperadas siguen siendo nulas a largo plazo debido a la ventaja matemática de la casa. Por lo tanto, si bien no conduce a quiebra bajo capital infinito, tampoco garantiza beneficios sostenidos. 
+
+Al introducir la limitación del capital, la estrategia de D’Alembert muestra sus vulnerabilidades. En los gráficos obtenidos se observan distintos escenarios. En algunos casos se alcanzan ganancias modestas sin llegar a la quiebra, sugiriendo que en secuencias con alternancia de victorias y derrotas la estrategia puede ser viable. No obstante, se evidencia un punto débil fundamental: una racha prolongada de pérdidas lleva al jugador a agotar su capital, sin posibilidad de recuperación. 
+
+Dado que el incremento en las apuestas no es tan agresivo como en la Martingala, el capital resiste mejor, pero sigue siendo vulnerable si las pérdidas se acumulan. Este riesgo es inevitable en cualquier estrategia de progresión negativa cuando el capital es limitado.
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen.png} &
+  \end{tabular}
+  \caption{D'Alembert Capital Infinito}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{D'Alembert 100 tiradas 2 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Martingala 100 tiradas 20 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen3.png} &
+  \end{tabular}
+  \caption{D'Alembert 100 tiradas 20 corridas 10000 unidades monetarias}
+\end{figure}
+
+\subsection*{Fibonacci}
+En los escenarios donde se impone una restricción de capital finito, se observa que la estrategia Fibonacci tiende a ser riesgosa en secuencias adversas prolongadas. La progresión de apuestas que exige esta estrategia, al incrementar lentamente en comparación con Martingala, puede dar una sensación de control; sin embargo, no evita la quiebra. En la gráfica correspondiente, se ve una caída pronunciada del capital (incluso hasta aproximadamente 400 u.m.), lo cual evidencia que ante varias pérdidas consecutivas el jugador no logra recuperar lo apostado antes de quedarse sin fondos. 
+
+La frecuencia relativa de aciertos se mantiene alrededor del 50\%, pero como la progresión Fibonacci responde con aumentos más lentos, la recuperación tras las pérdidas no es inmediata, y con capital limitado, esto se traduce en una alta probabilidad de bancarrota. 
+
+En el supuesto teórico de disponer de capital infinito, la estrategia Fibonacci mejora su rendimiento. En este caso, se percibe que el capital se mantiene oscilando, con momentos de recuperación luego de rachas desfavorables. Al no haber un límite de fondos, el jugador puede continuar aplicando la progresión hasta que las ganancias acumuladas superen las pérdidas anteriores, lo cual eventualmente ocurre. 
+
+No obstante, se destaca que la recuperación es más lenta que en estrategias como Martingala, ya que Fibonacci no duplica, sino que incrementa las apuestas en función de una sucesión más suave. El gráfico muestra oscilaciones más moderadas y un capital que logra mantenerse o subir ligeramente respecto al inicial. La estrategia Fibonacci se presenta como una alternativa intermedia entre Martingala (muy agresiva) y D’Alembert (más conservadora). Ofrece una progresión menos arriesgada, lo que puede generar una falsa sensación de seguridad. Aunque reduce la velocidad con la que se pierde capital, no elimina el riesgo de quiebra, especialmente cuando el capital está limitado. 
+
+En términos de largo plazo, su eficacia depende más de la duración y severidad de las rachas negativas que de la frecuencia de aciertos. Si bien permite momentos de recuperación, no garantiza ganancias sostenidas y no escapa a la naturaleza perdedora del juego frente a una ventaja de la casa (como en la ruleta). Aún en capital infinito, su ganancia esperada sigue siendo negativa.
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen.png} &
+  \end{tabular}
+  \caption{Fibonacci Capital Infinito}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Fibonacci 100 tiradas 2 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Fibonacci 100 tiradas 20 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen3.png} &
+  \end{tabular}
+  \caption{Fibonacci 100 tiradas 20 corridas 10000 unidades monetarias}
+\end{figure}
+
+\subsection*{Paroli}
+La estrategia Paroli, que consiste en aumentar la apuesta tras una victoria y reiniciarla tras una derrota, muestra un comportamiento intermedio en cuanto a riesgo y rendimiento. 
+
+Cuando el capital se mantiene prácticamente estático se debe a la neutralización de ganancias por pérdidas posteriores o a la no encadenación de victorias. Su peor faceta se muestra cuando se encadenan resultados desfavorables, desembocando a veces en quiebra, y su mejor faceta es cuando se encadenan victorias sucesivas, capitalizando eficazmente el momento para obtener beneficios. Además, realizamos su ejecución bajo un ambiente de poco flujo de caja inicial para mostrar bien los efectos de este determinante. 
+
+Si bien este diseño puede proteger parcialmente el capital ante una serie de pérdidas, su éxito depende en gran medida de la aparición de victorias consecutivas.
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen.png} &
+  \end{tabular}
+  \caption{Paroli Capital Infinito}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Paroli 100 tiradas 2 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen2.png} &
+  \end{tabular}
+  \caption{Paroli 100 tiradas 20 corridas 1000 unidades monetarias}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.45\textwidth]{insertarImagen3.png} &
+  \end{tabular}
+  \caption{Paroli 100 tiradas 20 corridas 10000 unidades monetarias}
+\end{figure}
+
+\section{Conclusiones}
+El estudio confirma que ninguna de las estrategias evaluadas garantiza ganancias sostenidas en el tiempo, especialmente en contextos de capital limitado. Si bien algunas técnicas como Martingala, Fibonacci o Paroli pueden ocasionalmente generar beneficios importantes, lo hacen a costa de un riesgo extremadamente elevado, exponiendo al jugador a pérdidas rápidas e irreversibles ante rachas negativas. 
+
+En particular, las estrategias de progresión positiva como Paroli, aunque atractivas por su enfoque en capitalizar rachas ganadoras, requieren un capital considerable para ser efectivas, ya que dependen de eventos poco frecuentes que deben sostenerse en el tiempo. Con capital bajo, su impacto positivo es mínimo o nulo. 
+
+Por otro lado, estrategias más conservadoras como D’Alembert demostraron una mejor relación entre riesgo y estabilidad, aunque sus retornos tienden a ser modestos y, en general, no superan el sesgo estadístico natural de la ruleta (la ventaja de la casa). En todos los casos, se concluye que el capital finito es una limitante crítica: no solo condiciona la duración del juego, sino que acentúa el riesgo de quiebra en estrategias que requieren escaladas de apuesta. La simulación permite demostrar, desde una perspectiva objetiva, que en el largo plazo el sistema está diseñado para que la casa mantenga su ventaja, y cualquier estrategia aplicada debe contemplarse dentro de un marco lúdico más que financiero. 
+
+Se recomienda siempre evaluar el nivel de riesgo asumido, definir previamente un capital de juego acotado, y no perseguir ganancias imposibles en sistemas de probabilidad negativa. Este tipo de simulaciones sirven como herramienta poderosa para desmitificar falsas creencias sobre "sistemas infalibles" en juegos de azar.
+
+\section{Referencias}
+\begin{itemize}
+  \item Sportium Blog: “3 simples estrategias para ganar en la ruleta que cualquiera puede intentar”, \url{https://blog.sportium.es/3-simples-estrategias-para-ganar-en-la-ruleta-que-cualquiera-puede-intentar/}
+  \item R. López Briega, “Probabilidad y estadística con Python”, \url{https://relopezbriega.github.io/blog/2015/06/27/probabilidad-y-estadistica-con-python/}
+  \item Matplotlib Documentation, “Users Guide”, \url{https://matplotlib.org/stable/users/index.html}
+  \item NumPy Documentation, “User Guide”, \url{https://numpy.org/doc/stable/user/}
+  \item Python Standard Library, “random — Generators of random numbers”, \url{https://docs.python.org/3/library/random.html}
+  \item Wikipedia, “Ruleta”, \url{https://es.wikipedia.org/wiki/Ruleta}
+  \item Wikipedia, “Martingala”, \url{https://es.wikipedia.org/wiki/Martingala}
+  \item Wikipedia, “D'Alembert”, \url{https://es.wikipedia.org/wiki/Principio_de_d%27Alembert}
+  \item Wikipedia, “Fibonacci”, \url{https://es.wikipedia.org/wiki/Sucesión_de_Fibonacci}
+  \item Pokerstars, “Paroli”, \url{https://www.pokerstars.es/casino/news/los-grandes-sistemas-de-la-ruleta-el-sistema-paroli/}
+\end{itemize}
+
+\end{document}
+
