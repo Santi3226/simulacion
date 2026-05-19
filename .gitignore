@@ -61,3 +61,8 @@ _minted*
 *.tmp
 *.bak
 *.sav
+
+# Img
+*.png
+*.jpg
+*.jpeg
