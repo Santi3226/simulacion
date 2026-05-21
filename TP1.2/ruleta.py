@@ -61,7 +61,7 @@ args = parser.parse_args()
 
 # Validaciones y asignaciones
 
-if args.a == 'f' and args.capital_inicial <= 0:
+if args.a == 'f' and args.capital <= 0:
     parser.error("El capital inicial debe ser mayor a 0.")
 
 if args.e is not None and not (0 <= args.e <= 36):
@@ -72,7 +72,7 @@ cant_tiradas   = args.n
 numero_elegido = args.e
 estrategia     = args.s
 capital_tipo   = args.a
-capital_inicial = args.capital_inicial if capital_tipo == 'f' else float('inf')
+capital_inicial = args.capital if capital_tipo == 'f' else float('inf')
 
 # Tipo de apuesta 
 
@@ -133,8 +133,77 @@ fib_seq = fibonacci_seq(100)
 
 # Simulación
 
+# for corrida in range(cant_corridas):
+#     saldo = capital_inicial if capital_tipo == 'f' else float('inf')
+#     apuesta_inicial = 10
+#     apuesta = apuesta_inicial
+#     fib_index = 0
+#     victorias_consecutivas = 0
+#     saldo_corrida = []
+
+#     for tirada in range(cant_tiradas):
+#         if capital_tipo == 'f' and saldo <= 0:
+#             quiebras += 1
+#             quiebras_tiradas[tirada] += 1
+#             saldo_corrida += [0] * (cant_tiradas - tirada)
+#             break
+
+#         numero = random.randint(0, 36)
+#         color  = obtener_color(numero)
+#         docena = obtener_docena(numero)
+
+#         gano = False
+#         if tipo_apuesta == 'número' and numero == numero_elegido:
+#             gano = True
+#         elif tipo_apuesta == 'color' and color == eleccion:
+#             gano = True
+#         elif tipo_apuesta == 'docena' and docena == eleccion:
+#             gano = True
+
+#         payout = 35 if tipo_apuesta == 'número' else (2 if tipo_apuesta == 'docena' else 1)
+
+#         if gano:
+#             saldo += apuesta * payout
+#             if estrategia == 'm':
+#                 apuesta = apuesta_inicial
+#             elif estrategia == 'd':
+#                 if apuesta > apuesta_inicial:
+#                     apuesta -= apuesta_inicial
+#             elif estrategia == 'f':
+#                 fib_index = max(0, fib_index - 2)
+#                 apuesta = fib_seq[fib_index] * apuesta_inicial
+#             elif estrategia == 'p':
+#                 victorias_consecutivas += 1
+#                 if victorias_consecutivas == 3:
+#                     apuesta = apuesta_inicial
+#                     victorias_consecutivas = 0
+#                 else:
+#                     apuesta = min(saldo, apuesta * 2)
+#         else:
+#             saldo -= apuesta
+#             if estrategia == 'm':
+#                 apuesta *= 2
+#             elif estrategia == 'd':
+#                 apuesta += apuesta_inicial
+#             elif estrategia == 'f':
+#                 fib_index += 1
+#                 apuesta = fib_seq[min(fib_index, len(fib_seq) - 1)] * apuesta_inicial
+#             elif estrategia == 'p':
+#                 apuesta = apuesta_inicial
+#                 victorias_consecutivas = 0
+
+#         saldo_corrida.append(saldo)
+
+#         if gano:
+#             exitos_por_tirada[tirada] += 1
+
+#     saldo_final.append(saldo if saldo != float('inf') else capital_inicial)
+#     capital_evolucion[:len(saldo_corrida)] += saldo_corrida
+
+# Simulación corregida
 for corrida in range(cant_corridas):
-    saldo = capital_inicial if capital_tipo == 'f' else float('inf')
+    # En infinito empezamos con el capital base pero permitimos saldos negativos
+    saldo = args.capital 
     apuesta_inicial = 10
     apuesta = apuesta_inicial
     fib_index = 0
@@ -142,9 +211,11 @@ for corrida in range(cant_corridas):
     saldo_corrida = []
 
     for tirada in range(cant_tiradas):
+        # El control de quiebra SOLO se ejecuta si el capital es FINITO ('f')
         if capital_tipo == 'f' and saldo <= 0:
             quiebras += 1
             quiebras_tiradas[tirada] += 1
+            # Rellenamos el resto de la corrida con 0 porque quebró
             saldo_corrida += [0] * (cant_tiradas - tirada)
             break
 
@@ -178,7 +249,8 @@ for corrida in range(cant_corridas):
                     apuesta = apuesta_inicial
                     victorias_consecutivas = 0
                 else:
-                    apuesta = min(saldo, apuesta * 2)
+                    # En infinito no hay límite superior por saldo
+                    apuesta = apuesta * 2 if capital_tipo == 'i' else min(saldo, apuesta * 2)
         else:
             saldo -= apuesta
             if estrategia == 'm':
@@ -193,12 +265,13 @@ for corrida in range(cant_corridas):
                 victorias_consecutivas = 0
 
         saldo_corrida.append(saldo)
+        exitos_por_tirada[tirada] += 1 if gano else 0
 
-        if gano:
-            exitos_por_tirada[tirada] += 1
-
-    saldo_final.append(saldo if saldo != float('inf') else capital_inicial)
-    capital_evolucion[:len(saldo_corrida)] += saldo_corrida
+    # Guardamos el saldo final de la corrida
+    saldo_final.append(saldo)
+    # Por cuestiones de tipo convertimos a numpy para que no falle la suma con capital_evolucion que es un array
+    vector_saldo = np.array(saldo_corrida, dtype=np.float64)
+    capital_evolucion[:len(vector_saldo)] += vector_saldo
 
 # Resultados
 
@@ -223,7 +296,7 @@ plt.close()
 plt.figure(figsize=(8, 5))
 capital_promedio = capital_evolucion / cant_corridas
 plt.plot(range(1, len(capital_promedio) + 1), capital_promedio, color='red', label='fc (flujo de caja)')
-plt.axhline(y=capital_inicial if capital_tipo == 'f' else args.capital_inicial,
+plt.axhline(y=capital_inicial if capital_tipo == 'f' else args.capital,
             color='blue', linestyle='--', label='fci (flujo de caja inicial)')
 
 quiebra_indices = np.where(quiebras_tiradas > 0)[0]
