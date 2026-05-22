@@ -66,3 +66,7 @@ _minted*
 *.png
 *.jpg
 *.jpeg
+
+# Permitir imágenes dentro de carpetas Graficas
+!**/Graficas/**
+!**/graficas/**
