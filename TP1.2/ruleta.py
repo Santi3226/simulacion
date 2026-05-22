@@ -43,13 +43,12 @@ parser.add_argument('-n', type=int, default=300,
                     help='Cantidad de tiradas por corrida (default: 300)')
 parser.add_argument('-e', type=int, default=None,
                     help='Número elegido (0-36). Si se omite, se pregunta el tipo de apuesta.')
-parser.add_argument('-s', type=str, choices=['m', 'd', 'f', 'o', 'p'], required=True,
+parser.add_argument('-s', type=str, choices=['m', 'd', 'f', 'p'], required=True,
                     help=(
                         'Estrategia de apuesta:\n'
                         '  m = Martingala\n'
                         '  d = D\'Alembert\n'
                         '  f = Fibonacci\n'
-                        '  o = Otra\n'
                         '  p = Paroli'
                     ))
 parser.add_argument('-a', type=str, choices=['i', 'f'], required=True,
@@ -133,74 +132,6 @@ fib_seq = fibonacci_seq(100)
 
 # Simulación
 
-# for corrida in range(cant_corridas):
-#     saldo = capital_inicial if capital_tipo == 'f' else float('inf')
-#     apuesta_inicial = 10
-#     apuesta = apuesta_inicial
-#     fib_index = 0
-#     victorias_consecutivas = 0
-#     saldo_corrida = []
-
-#     for tirada in range(cant_tiradas):
-#         if capital_tipo == 'f' and saldo <= 0:
-#             quiebras += 1
-#             quiebras_tiradas[tirada] += 1
-#             saldo_corrida += [0] * (cant_tiradas - tirada)
-#             break
-
-#         numero = random.randint(0, 36)
-#         color  = obtener_color(numero)
-#         docena = obtener_docena(numero)
-
-#         gano = False
-#         if tipo_apuesta == 'número' and numero == numero_elegido:
-#             gano = True
-#         elif tipo_apuesta == 'color' and color == eleccion:
-#             gano = True
-#         elif tipo_apuesta == 'docena' and docena == eleccion:
-#             gano = True
-
-#         payout = 35 if tipo_apuesta == 'número' else (2 if tipo_apuesta == 'docena' else 1)
-
-#         if gano:
-#             saldo += apuesta * payout
-#             if estrategia == 'm':
-#                 apuesta = apuesta_inicial
-#             elif estrategia == 'd':
-#                 if apuesta > apuesta_inicial:
-#                     apuesta -= apuesta_inicial
-#             elif estrategia == 'f':
-#                 fib_index = max(0, fib_index - 2)
-#                 apuesta = fib_seq[fib_index] * apuesta_inicial
-#             elif estrategia == 'p':
-#                 victorias_consecutivas += 1
-#                 if victorias_consecutivas == 3:
-#                     apuesta = apuesta_inicial
-#                     victorias_consecutivas = 0
-#                 else:
-#                     apuesta = min(saldo, apuesta * 2)
-#         else:
-#             saldo -= apuesta
-#             if estrategia == 'm':
-#                 apuesta *= 2
-#             elif estrategia == 'd':
-#                 apuesta += apuesta_inicial
-#             elif estrategia == 'f':
-#                 fib_index += 1
-#                 apuesta = fib_seq[min(fib_index, len(fib_seq) - 1)] * apuesta_inicial
-#             elif estrategia == 'p':
-#                 apuesta = apuesta_inicial
-#                 victorias_consecutivas = 0
-
-#         saldo_corrida.append(saldo)
-
-#         if gano:
-#             exitos_por_tirada[tirada] += 1
-
-#     saldo_final.append(saldo if saldo != float('inf') else capital_inicial)
-#     capital_evolucion[:len(saldo_corrida)] += saldo_corrida
-
-# Simulación corregida
 for corrida in range(cant_corridas):
     # En infinito empezamos con el capital base pero permitimos saldos negativos
     saldo = args.capital 
