@@ -218,6 +218,9 @@ for corrida in range(cant_corridas):
             # Rellenamos el resto de la corrida con 0 porque quebró
             saldo_corrida += [0] * (cant_tiradas - tirada)
             break
+            
+        if capital_tipo == 'f':
+            apuesta = min(apuesta, saldo)
 
         numero = random.randint(0, 36)
         color  = obtener_color(numero)
